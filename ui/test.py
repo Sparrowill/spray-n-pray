@@ -1,3 +1,4 @@
+#!/usr/bin/python
 
 import tkinter as tk
 from tkinter.ttk import *
@@ -5,12 +6,18 @@ from tkinter.ttk import *
 import serial 
 import time
 import os, sys
-
+time.sleep(2)
 # Create an instance of tkinter frame or widget
-win = None
+win = tk.Tk()
+win.configure(cursor="none")
+
+
+# Create a canvas to hold all the stuff apart from the progress bar
+canvas= tk.Canvas(win, width= 800, height= 480, )
 
 def restart():
     print("User Reset")
+    # Destroy and then re-set up
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
@@ -21,16 +28,10 @@ def exit():
     sys.exit()
 
 def main():
-    # Setup Serial port - probably ACM0
     ser = serial.Serial('/dev/ttyACM0', baudrate=115200)
 
-
-    global win
-    win = tk.Tk()
-    win.configure(cursor="none")
-
-    # Create a canvas to hold all the stuff apart from the progress bar
-    canvas= tk.Canvas(win, width= 800, height= 480, )
+    global win 
+    global canvas
     #Create the background
     bg=tk.PhotoImage(file = "bg.png")
     canvas.create_image(0,0,anchor=tk.NW, image=bg)
@@ -49,8 +50,6 @@ def main():
     # # Red #d94c26
     # # Fawn #efe2af
 
-
-
     s = Style()
     s.theme_use('clam')
     s.configure("red.Horizontal.TProgressbar", troughcolor="#efe2af", 
@@ -59,8 +58,6 @@ def main():
 
     # print("Height (px) = {0}".format(win.winfo_screenheight())) #480
     # print("Width (px) = {0}".format(win.winfo_screenwidth())) #800
-
-
 
     # Create a button to exit the gui
     exit_button=tk.Button(win, text= "❌", command=exit, activebackground="#efe2af", bg="#efe2af",font=("Helvetica", 10),relief=tk.FLAT)
@@ -82,7 +79,12 @@ def main():
             val  = ser.read_until().decode("utf-8")
             str_val = str(val)
             if "RESET" in str_val:
-                restart() # Restarts the program
+                canvas_items = canvas.find_all()
+                for tag in canvas_items:
+                    canvas.delete(tag)
+                ser.close()
+                main()
+                #restart() # Restarts the program
             elif "COUNTDOWN" in str_val:
                 if "0" in str_val:
                     # Delete countdown box

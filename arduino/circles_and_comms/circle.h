@@ -11,6 +11,7 @@ public:
   Circle(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4, uint8_t switchPin);
   void set_pins();
   void swap_leds();
+  void stop_leds();
   bool get_switch_pin_state();
 
 private:

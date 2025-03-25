@@ -34,6 +34,14 @@ void Circle::swap_leds() {
   }
 }
 
+void Circle::stop_leds() {
+  for (uint8_t i = 0; i < NUM_LED_PINS; i++) {
+    digitalWrite(_leds[i], LOW);
+  }
+}
+
+
+
 bool Circle::get_switch_pin_state() {
   return digitalRead(_switchPin);
 }

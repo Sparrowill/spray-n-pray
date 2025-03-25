@@ -1,7 +1,7 @@
 #include "circle.h"
 #define NUM_CIRCLES 5
 
-#define START_BUTTON_PIN 26
+#define START_BUTTON_PIN 26 //Active Low
 #define START_BUTTON_LIGHT 27
 #define START_BUTTON_FLASH_RATE 500
 
@@ -32,7 +32,7 @@ void setup() {
   // Set up the Serial Comms
   Serial.begin(115200);
   //Set up the Start Button
-  pinMode(START_BUTTON_PIN, INPUT);
+  pinMode(START_BUTTON_PIN, INPUT_PULLUP);
   pinMode(START_BUTTON_LIGHT, OUTPUT);
   bool startButtonLightState = HIGH;
   digitalWrite(START_BUTTON_LIGHT, startButtonLightState);
@@ -40,7 +40,7 @@ void setup() {
 
   uint32_t timestamp = millis();
   // Wait for the start button to be pushed
-  while (!digitalRead(START_BUTTON_PIN)) {
+  while (digitalRead(START_BUTTON_PIN)) {
     //Flash the button (non blocking)
     if ((millis() - timestamp) > START_BUTTON_FLASH_RATE) {
       timestamp = millis();
@@ -48,6 +48,7 @@ void setup() {
       digitalWrite(START_BUTTON_LIGHT, startButtonLightState);
     }
   }
+  digitalWrite(START_BUTTON_LIGHT, LOW);
 
   Serial.println("COUNTDOWN_5");
   delay(1000);
@@ -61,6 +62,7 @@ void setup() {
   delay(1000);
   Serial.println("COUNTDOWN_0");
   delay(1000);
+  reset();
 }
 
 void loop() {
@@ -81,6 +83,8 @@ void loop() {
     while (1) {
       // If we have been on the current circle for the set
       if (millis() - circleStartTime > TIME_ON_CIRCLE) {
+        // turn off any leds
+        activeCircle.stop_leds();
         // Move to new circle
         currentCircle++;
         break;
@@ -90,7 +94,7 @@ void loop() {
         // update score
         score++;
         Serial.println(String(score));
-        if(score >= MAX_SCORE){
+        if (score >= MAX_SCORE) {
           //Game over, reset
           reset();
         }
@@ -99,13 +103,13 @@ void loop() {
       activeCircle.swap_leds();
 
       // Check for reset button
-      if (digitalRead(START_BUTTON_PIN)){
+      if (!digitalRead(START_BUTTON_PIN)) {
         reset();
       }
     }
 
     if (currentCircle >= MAX_CIRCLE_SWAPS) {
-      // EXIT (just finish the game)
+      reset();
       break;
     }
   }
