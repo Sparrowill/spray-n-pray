@@ -1,10 +1,54 @@
-uint8_t i = 0;
+#include "circle.h"
+#define NUM_CIRCLES 5
+
+#define START_BUTTON_PIN 26
+#define START_BUTTON_LIGHT 27
+#define START_BUTTON_FLASH_RATE 500
+
+#define MAX_CIRCLE_SWAPS 200  // Needs verifying / tweaking with below
+#define TIME_ON_CIRCLE 3000   //ms - time spent on each array, multiply by MAX_CIRCLE_SWAPS for maximum game time.
+
+#define MAX_SCORE 100
+
+// Define 5 circles
+Circle topLeft = Circle(1, 2, 3, 4, 5);
+Circle topRight = Circle(6, 7, 8, 9, 10);
+Circle bottomLeft = Circle(11, 12, 13, 14, 15);
+Circle bottomRight = Circle(16, 17, 18, 19, 20);
+Circle middle = Circle(21, 22, 23, 24, 25);
+
+Circle circles[NUM_CIRCLES] = { topLeft, topRight, bottomLeft, bottomRight, middle };
+
+void reset() {
+  // Deal with reset button push
+  Serial.println("RESET");
+  setup();
+}
+
+
 
 
 void setup() {
-  i = 0;
-  delay(3000);
+  // Set up the Serial Comms
   Serial.begin(115200);
+  //Set up the Start Button
+  pinMode(START_BUTTON_PIN, INPUT);
+  pinMode(START_BUTTON_LIGHT, OUTPUT);
+  bool startButtonLightState = HIGH;
+  digitalWrite(START_BUTTON_LIGHT, startButtonLightState);
+
+
+  uint32_t timestamp = millis();
+  // Wait for the start button to be pushed
+  while (!digitalRead(START_BUTTON_PIN)) {
+    //Flash the button (non blocking)
+    if ((millis() - timestamp) > START_BUTTON_FLASH_RATE) {
+      timestamp = millis();
+      startButtonLightState = !startButtonLightState;
+      digitalWrite(START_BUTTON_LIGHT, startButtonLightState);
+    }
+  }
+
   Serial.println("COUNTDOWN_5");
   delay(1000);
   Serial.println("COUNTDOWN_4");
@@ -20,13 +64,49 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(String(i));
-  delay(500);
-  i++;
+  // Generate a random array for circle swapping
+  uint8_t circleOrder[MAX_CIRCLE_SWAPS] = {};
+  for (uint8_t i = 0; i < MAX_CIRCLE_SWAPS; i++) {
+    // Chooses a random number between 0 and NUM_CIRCLES-1
+    circleOrder[i] = random(0, NUM_CIRCLES);
+  }
 
-  if (i > 100) {
-    delay(3000);
-    Serial.println("RESET");
-    setup();
+  uint8_t score = 0;
+  uint8_t currentCircle = 0;
+  while (1) {
+
+    Circle activeCircle = circles[circleOrder[currentCircle]];
+    activeCircle.set_pins();
+    uint32_t circleStartTime = millis();
+    while (1) {
+      // If we have been on the current circle for the set
+      if (millis() - circleStartTime > TIME_ON_CIRCLE) {
+        // Move to new circle
+        currentCircle++;
+        break;
+      }
+      // If the water is on target
+      if (activeCircle.get_switch_pin_state()) {
+        // update score
+        score++;
+        Serial.println(String(score));
+        if(score >= MAX_SCORE){
+          //Game over, reset
+          reset();
+        }
+      }
+      // Will do non-blocking timer on the back end to handle the LED timings
+      activeCircle.swap_leds();
+
+      // Check for reset button
+      if (digitalRead(START_BUTTON_PIN)){
+        reset();
+      }
+    }
+
+    if (currentCircle >= MAX_CIRCLE_SWAPS) {
+      // EXIT (just finish the game)
+      break;
+    }
   }
 }
