@@ -1,0 +1,77 @@
+<svg id="Cuts" xmlns="http://www.w3.org/2000/svg" width="4961" height="3508" viewBox="0 0 4961 3508">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+        stroke-width: 4.167px;
+      }
+
+      .cls-1 {
+        stroke: #7d7d7d;
+      }
+
+      .cls-2 {
+        stroke: #636363;
+      }
+    </style>
+  </defs>
+  <g id="Bottom_Left_Cuts" data-name="Bottom Left Cuts">
+    <circle class="cls-1" cx="742.5" cy="2323.5" r="44.5"/>
+    <circle class="cls-1" cx="1127.5" cy="2162.5" r="44.5"/>
+    <circle class="cls-1" cx="1673.5" cy="2708.5" r="44.5"/>
+    <circle class="cls-1" cx="1127.5" cy="3254.5" r="44.5"/>
+    <circle class="cls-1" cx="581.5" cy="2708.5" r="44.5"/>
+    <circle class="cls-1" cx="1514.5" cy="2323.5" r="44.5"/>
+    <circle class="cls-1" cx="1514.5" cy="3096.5" r="44.5"/>
+    <circle class="cls-1" cx="742.5" cy="3096.5" r="44.5"/>
+    <circle class="cls-1" cx="1129" cy="2710" r="468"/>
+  </g>
+  <g id="Top_Left_Cuts" data-name="Top Left Cuts">
+    <circle class="cls-1" cx="743.5" cy="417.5" r="44.5"/>
+    <circle class="cls-1" cx="1128.5" cy="256.5" r="44.5"/>
+    <circle class="cls-1" cx="1674.5" cy="802.5" r="44.5"/>
+    <circle class="cls-1" cx="1128.5" cy="1348.5" r="44.5"/>
+    <circle class="cls-1" cx="582.5" cy="802.5" r="44.5"/>
+    <circle class="cls-1" cx="1515.5" cy="417.5" r="44.5"/>
+    <circle class="cls-1" cx="1515.5" cy="1190.5" r="44.5"/>
+    <circle class="cls-1" cx="743.5" cy="1190.5" r="44.5"/>
+    <circle class="cls-1" cx="1129" cy="803" r="468"/>
+  </g>
+  <g id="Middle_Cuts" data-name="Middle Cuts">
+    <circle class="cls-1" cx="2095.5" cy="1367.5" r="44.5"/>
+    <circle class="cls-1" cx="2480.5" cy="1206.5" r="44.5"/>
+    <circle class="cls-1" cx="3026.5" cy="1752.5" r="44.5"/>
+    <circle class="cls-1" cx="2480.5" cy="2298.5" r="44.5"/>
+    <circle class="cls-1" cx="1934.5" cy="1752.5" r="44.5"/>
+    <circle class="cls-1" cx="2867.5" cy="1367.5" r="44.5"/>
+    <circle class="cls-1" cx="2867.5" cy="2140.5" r="44.5"/>
+    <circle class="cls-1" cx="2095.5" cy="2140.5" r="44.5"/>
+    <circle class="cls-1" cx="2481" cy="1753" r="468"/>
+  </g>
+  <g id="Bottom_Right_Cuts" data-name="Bottom Right Cuts">
+    <circle class="cls-1" cx="3445.5" cy="2323.5" r="44.5"/>
+    <circle class="cls-1" cx="3830.5" cy="2162.5" r="44.5"/>
+    <circle class="cls-1" cx="4376.5" cy="2708.5" r="44.5"/>
+    <circle class="cls-1" cx="3830.5" cy="3254.5" r="44.5"/>
+    <circle class="cls-1" cx="3284.5" cy="2708.5" r="44.5"/>
+    <circle class="cls-1" cx="4217.5" cy="2323.5" r="44.5"/>
+    <circle class="cls-1" cx="4217.5" cy="3096.5" r="44.5"/>
+    <circle class="cls-1" cx="3445.5" cy="3096.5" r="44.5"/>
+    <circle class="cls-1" cx="3832" cy="2710" r="468"/>
+  </g>
+  <g id="Top_Right_Cuts" data-name="Top Right Cuts">
+    <circle class="cls-1" cx="3445.5" cy="417.5" r="44.5"/>
+    <circle class="cls-1" cx="3830.5" cy="256.5" r="44.5"/>
+    <circle class="cls-1" cx="4376.5" cy="802.5" r="44.5"/>
+    <circle class="cls-1" cx="3830.5" cy="1348.5" r="44.5"/>
+    <circle class="cls-1" cx="3284.5" cy="802.5" r="44.5"/>
+    <circle class="cls-1" cx="4217.5" cy="417.5" r="44.5"/>
+    <circle class="cls-1" cx="4217.5" cy="1190.5" r="44.5"/>
+    <circle class="cls-1" cx="3445.5" cy="1190.5" r="44.5"/>
+    <circle class="cls-1" cx="3832" cy="803" r="468"/>
+  </g>
+  <g id="Mounting_Holes" data-name="Mounting Holes">
+    <circle class="cls-2" cx="206.578" cy="206.688" r="29.516"/>
+    <circle class="cls-2" cx="4771.655" cy="206.688" r="29.535"/>
+  </g>
+</svg>
