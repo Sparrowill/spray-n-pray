@@ -47,13 +47,13 @@ class UI():
             self.countdown_rect = self.canvas.create_rectangle(300, 10, 500, 470, outline = "#efe2af", fill = "#57a09e", width = 2)
             self.countdown_text_1 = self.canvas.create_text(450, 240, text="READY?", fill="black", font=('Helvetica 25 bold'),angle=270 )
             self.countdown_text_2 = self.canvas.create_text(400, 240, text="Your time starts in", fill="black", font=('Helvetica 25 bold'),angle=270 )
-            self.countdown_text_3 = self.canvas.create_text(350, 240, text="5", fill="black", font=('Helvetica 25 bold'),angle=270 )
+            self.countdown_text_3 = self.canvas.create_text(350, 240, text="", fill="black", font=('Helvetica 25 bold'),angle=270 )
             self.countdownActive=True
         else:
             print("ERR: Cannot re-create countdown, it already exists")
     def update_countdown(self,num):
         if self.countdownActive:
-            self.canvas.itemconfig(self.countdown_text_3,text=num);
+            self.canvas.itemconfig(self.countdown_text_3,text=num)
         else:
             print("ERR: Cannot update countdown, it doesn't exist")
 
