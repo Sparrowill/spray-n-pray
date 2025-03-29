@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "circle.h"
 
 Circle::Circle(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4, uint8_t switchPin) {
@@ -5,7 +6,7 @@ Circle::Circle(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4, uint8_t s
   _leds[1] = led2;
   _leds[2] = led3;
   _leds[3] = led4;
-  uint8_t _switchPin = switchPin;
+  _switchPin = switchPin;
 }
 
 void Circle::set_pins() {
@@ -13,7 +14,8 @@ void Circle::set_pins() {
     pinMode(_leds[i], OUTPUT);
     digitalWrite(_leds[i], LOW);
   }
-  pinMode(_switchPin, INPUT);
+  pinMode(_switchPin, INPUT_PULLUP);
+
   _ledTimer = millis();
 }
 

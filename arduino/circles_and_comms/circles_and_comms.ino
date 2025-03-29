@@ -1,7 +1,7 @@
 #include "circle.h"
 #define NUM_CIRCLES 5
 
-#define START_BUTTON_PIN 26 //Active Low
+#define START_BUTTON_PIN 26  //Active Low
 #define START_BUTTON_LIGHT 27
 #define START_BUTTON_FLASH_RATE 500
 
@@ -11,19 +11,17 @@
 #define MAX_SCORE 100
 
 // Define 5 circles
-Circle topLeft = Circle(1, 2, 3, 4, 5);
-Circle topRight = Circle(6, 7, 8, 9, 10);
-Circle bottomLeft = Circle(11, 12, 13, 14, 15);
-Circle bottomRight = Circle(16, 17, 18, 19, 20);
-Circle middle = Circle(21, 22, 23, 24, 25);
+Circle topLeft = Circle(8, 9, 10, 11, 13);
+Circle topRight = Circle(14, 15, 16, 17, 49);
+Circle bottomLeft = Circle(4, 5, 6, 7, 12);
+Circle bottomRight = Circle(18, 19, 20, 21, 50);
+Circle middle = Circle(23, 22, 2, 3, 51);
 
 Circle circles[NUM_CIRCLES] = { topLeft, topRight, bottomLeft, bottomRight, middle };
 
-void reset() {
-  // Deal with reset button push
-  Serial.println("RESET");
-  setup();
-}
+void (*resetFunc)(void) = 0;
+// Deal with reset button push
+
 
 
 
@@ -37,6 +35,10 @@ void setup() {
   bool startButtonLightState = HIGH;
   digitalWrite(START_BUTTON_LIGHT, startButtonLightState);
 
+  for (uint8_t i = 0; i < NUM_CIRCLES; i++) {
+    circles[i].set_pins();
+    circles[i].stop_leds();
+  }
 
   uint32_t timestamp = millis();
   // Wait for the start button to be pushed
@@ -62,7 +64,7 @@ void setup() {
   delay(1000);
   Serial.println("COUNTDOWN_0");
   delay(1000);
-  reset();
+  //reset();
 }
 
 void loop() {
@@ -78,7 +80,7 @@ void loop() {
   while (1) {
 
     Circle activeCircle = circles[circleOrder[currentCircle]];
-    activeCircle.set_pins();
+    //activeCircle.set_pins();
     uint32_t circleStartTime = millis();
     while (1) {
       // If we have been on the current circle for the set
@@ -91,25 +93,29 @@ void loop() {
       }
       // If the water is on target
       if (activeCircle.get_switch_pin_state()) {
+        delay(100);
         // update score
         score++;
         Serial.println(String(score));
-        if (score >= MAX_SCORE) {
+        if (score > MAX_SCORE) {
+          activeCircle.stop_leds();
+          delay(5000);
+          Serial.println("RESET");
+          delay(1000);
+          resetFunc();
           //Game over, reset
-          reset();
+          //reset();
         }
       }
       // Will do non-blocking timer on the back end to handle the LED timings
       activeCircle.swap_leds();
-
-      // Check for reset button
-      if (!digitalRead(START_BUTTON_PIN)) {
-        reset();
-      }
     }
 
     if (currentCircle >= MAX_CIRCLE_SWAPS) {
-      reset();
+      Serial.println("RESET");
+      delay(1000);
+      resetFunc();
+
       break;
     }
   }

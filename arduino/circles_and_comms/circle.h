@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #define NUM_LED_PINS 4
-#define LED_FLASH_TIME 500 //ms - The amount of time each LED colour will be on for
+#define LED_FLASH_TIME 200 //ms - The amount of time each LED colour will be on for
 
 class Circle {
 public:
@@ -16,7 +16,7 @@ public:
 
 private:
   uint8_t _leds[NUM_LED_PINS] = {};
-  uint8_t _switchPin;
+  uint8_t _switchPin = 0;
   uint8_t _ledCounter = 0;
   uint32_t _ledTimer = 0;
 };
