@@ -14,3 +14,6 @@ You can now run python commands normally
 ``` bash
 pi@gamepi:~/Documents/spray-n-pray/ui $  python test.py
 ```
+
+
+Or use ./launcher.sh inside the home/pi directory

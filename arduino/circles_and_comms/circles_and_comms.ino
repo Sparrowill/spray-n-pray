@@ -29,6 +29,7 @@ void (*resetFunc)(void) = 0;
 void setup() {
   // Set up the Serial Comms
   Serial.begin(115200);
+  Serial.println();  //There to clear the buffer in the python
   //Set up the Start Button
   pinMode(START_BUTTON_PIN, INPUT_PULLUP);
   pinMode(START_BUTTON_LIGHT, OUTPUT);
@@ -50,6 +51,8 @@ void setup() {
       digitalWrite(START_BUTTON_LIGHT, startButtonLightState);
     }
   }
+  Serial.println("RESET");
+  delay(1000);
   digitalWrite(START_BUTTON_LIGHT, LOW);
 
   Serial.println("COUNTDOWN_5");
@@ -80,43 +83,47 @@ void loop() {
   while (1) {
 
     Circle activeCircle = circles[circleOrder[currentCircle]];
-    //activeCircle.set_pins();
     uint32_t circleStartTime = millis();
-    while (1) {
-      // If we have been on the current circle for the set
+
+    // While the game hasn't timed out
+    while (currentCircle < MAX_CIRCLE_SWAPS) {
+
+      // Handle reset requests
+      if (!digitalRead(START_BUTTON_PIN)) {
+        //Reset requested
+        Serial.println("RESET");
+        delay(1000);
+        resetFunc();
+      }
+
+      // If we have been on the current circle for the set time
       if (millis() - circleStartTime > TIME_ON_CIRCLE) {
         // turn off any leds
         activeCircle.stop_leds();
         // Move to new circle
         currentCircle++;
-        break;
+        activeCircle = circles[circleOrder[currentCircle]];
+        circleStartTime = millis();
       }
+
       // If the water is on target
       if (activeCircle.get_switch_pin_state()) {
-        delay(100);
+        delay(100);  //TODO non blocking
         // update score
         score++;
         Serial.println(String(score));
-        if (score > MAX_SCORE) {
+        if (score >= MAX_SCORE) {
           activeCircle.stop_leds();
-          delay(5000);
-          Serial.println("RESET");
-          delay(1000);
-          resetFunc();
-          //Game over, reset
-          //reset();
+          break;
+          //Game over
         }
       }
       // Will do non-blocking timer on the back end to handle the LED timings
       activeCircle.swap_leds();
     }
-
-    if (currentCircle >= MAX_CIRCLE_SWAPS) {
-      Serial.println("RESET");
-      delay(1000);
-      resetFunc();
-
-      break;
-    }
+    delay(100);
+    Serial.end();
+    //Game over
+    resetFunc();
   }
 }

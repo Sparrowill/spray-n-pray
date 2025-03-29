@@ -36,7 +36,6 @@ def main():
     bg=tk.PhotoImage(file = "bg.png")
     canvas.create_image(0,0,anchor=tk.NW, image=bg)
     #Create the title
-
     canvas.create_text(750, 240, text="SPRAY 'N' PRAY ", fill="black", font=('Helvetica 35 bold'),angle=270)
     timer_text = canvas.create_text(400, 400, text="1", fill="black", font=('Helvetica 35 bold'),angle=270)
     countdown_rect = canvas.create_rectangle(300, 10, 500, 470, outline = "#efe2af", fill = "#57a09e", width = 2)
