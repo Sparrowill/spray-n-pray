@@ -85,7 +85,7 @@ void loop() {
     }
     // Chose a random number between 1 and MAX_TIMER for the circle to stay for
     circleOrder[i].circleTime = random(2, MAX_TIMER + 1);
-    Serial.println("Circle: " + String(circleOrder[i].circlePosition) + ", Time on Circle: " + String(circleOrder[i].circleTime));
+  //  Serial.println("Circle: " + String(circleOrder[i].circlePosition) + ", Time on Circle: " + String(circleOrder[i].circleTime));
   }
 
   uint8_t score = 0;
@@ -95,7 +95,7 @@ void loop() {
     Circle activeCircle = circles[circleOrder[currentCircle].circlePosition];
     uint32_t circleStartTime = millis();
     uint32_t onTargetTimer = millis();
-    
+
     // While the game hasn't timed out
     while (currentCircle < MAX_CIRCLE_SWAPS) {
 
