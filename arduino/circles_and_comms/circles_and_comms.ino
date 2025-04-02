@@ -6,7 +6,9 @@
 #define START_BUTTON_FLASH_RATE 500
 
 #define MAX_CIRCLE_SWAPS 200  // Needs verifying / tweaking with below
-#define TIME_ON_CIRCLE 3000   //ms - time spent on each array, multiply by MAX_CIRCLE_SWAPS for maximum game time.
+#define MAX_TIMER 4           //s - max time spent on each array, multiply by MAX_CIRCLE_SWAPS for maximum game time.
+
+#define TARGET_CHECK_INTERVAL 200  // Effectively the marker of how long the game will last, how often do we add points for on-target
 
 #define MAX_SCORE 100
 
@@ -72,19 +74,28 @@ void setup() {
 
 void loop() {
   // Generate a random array for circle swapping
-  uint8_t circleOrder[MAX_CIRCLE_SWAPS] = {};
+  circleVars circleOrder[MAX_CIRCLE_SWAPS] = {};
   for (uint8_t i = 0; i < MAX_CIRCLE_SWAPS; i++) {
-    // Chooses a random number between 0 and NUM_CIRCLES-1
-    circleOrder[i] = random(0, NUM_CIRCLES);
+    // Chooses a random number between 0 and NUM_CIRCLES-1 for the circle to do
+    circleOrder[i].circlePosition = random(0, NUM_CIRCLES);
+    // Check the number isn;t the same as the last one
+    while (i > 0 && circleOrder[i].circlePosition == circleOrder[i - 1].circlePosition) {
+      circleOrder[i].circlePosition = random(0, NUM_CIRCLES);
+      // Will only exit once the ranom number is new.
+    }
+    // Chose a random number between 1 and MAX_TIMER for the circle to stay for
+    circleOrder[i].circleTime = random(2, MAX_TIMER + 1);
+    Serial.println("Circle: " + String(circleOrder[i].circlePosition) + ", Time on Circle: " + String(circleOrder[i].circleTime));
   }
 
   uint8_t score = 0;
   uint8_t currentCircle = 0;
   while (1) {
 
-    Circle activeCircle = circles[circleOrder[currentCircle]];
+    Circle activeCircle = circles[circleOrder[currentCircle].circlePosition];
     uint32_t circleStartTime = millis();
-
+    uint32_t onTargetTimer = millis();
+    
     // While the game hasn't timed out
     while (currentCircle < MAX_CIRCLE_SWAPS) {
 
@@ -97,25 +108,28 @@ void loop() {
       }
 
       // If we have been on the current circle for the set time
-      if (millis() - circleStartTime > TIME_ON_CIRCLE) {
+      if (millis() - circleStartTime > ((circleOrder[currentCircle].circleTime) * 1000)) {
         // turn off any leds
         activeCircle.stop_leds();
         // Move to new circle
         currentCircle++;
-        activeCircle = circles[circleOrder[currentCircle]];
+        activeCircle = circles[circleOrder[currentCircle].circlePosition];
         circleStartTime = millis();
       }
-
-      // If the water is on target
-      if (activeCircle.get_switch_pin_state()) {
-        delay(100);  //TODO non blocking
-        // update score
-        score++;
-        Serial.println(String(score));
-        if (score >= MAX_SCORE) {
-          activeCircle.stop_leds();
-          break;
-          //Game over
+      // If enough tim ehas passed that we can check for on-target water again
+      if (millis() - onTargetTimer > TARGET_CHECK_INTERVAL) {
+        // If the water is on target
+        onTargetTimer = millis();
+        if (activeCircle.get_switch_pin_state()) {
+          delay(100);  //TODO non blocking
+          // update score
+          score++;
+          Serial.println(String(score));
+          if (score >= MAX_SCORE) {
+            activeCircle.stop_leds();
+            break;
+            //Game over
+          }
         }
       }
       // Will do non-blocking timer on the back end to handle the LED timings
