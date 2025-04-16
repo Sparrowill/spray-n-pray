@@ -5,7 +5,8 @@ from tkinter.ttk import *
 
 import serial 
 import time
-import os, sys
+import os
+import logging
 
 class UI():
     def __init__(self):
@@ -24,7 +25,7 @@ class UI():
     def setup(self):
         self.win.configure(cursor='none')
         # Create the background
-        self.bg = tk.PhotoImage(file = "bg.png")
+        self.bg = tk.PhotoImage(file = "/home/pi/Documents/spray-n-pray/ui/bg.png")
         self.canvas.create_image(0,0,anchor=tk.NW, image=self.bg)
         #Create the title
         self.canvas.create_text(750, 240, text="SPRAY 'N' PRAY ", fill="black", font=('Helvetica 35 bold'),angle=270)
@@ -50,12 +51,12 @@ class UI():
             self.countdown_text_3 = self.canvas.create_text(350, 240, text="", fill="black", font=('Helvetica 25 bold'),angle=270 )
             self.countdownActive=True
         else:
-            print("ERR: Cannot re-create countdown, it already exists")
+            logging.error("ERR: Cannot re-create countdown, it already exists")
     def update_countdown(self,num):
         if self.countdownActive:
             self.canvas.itemconfig(self.countdown_text_3,text=num)
         else:
-            print("ERR: Cannot update countdown, it doesn't exist")
+            logging.error("ERR: Cannot update countdown, it doesn't exist")
 
     def delete_countdown(self):
         if self.countdownActive:
@@ -66,7 +67,7 @@ class UI():
             self.canvas.delete(self.countdown_text_3)
             self.countdownActive = False
         else:
-            print("ERR: Cannot delete countdown, it doesn't exist")
+            logging.error("ERR: Cannot delete countdown, it doesn't exist")
     def create_progress_bar(self):
         if not self.progressBarActive:
             # add progress bar to track the serial data
@@ -74,20 +75,20 @@ class UI():
             self.progress.place(x=0, y=140, height=200)
             self.progressBarActive = True
         else:
-            print("ERR: Cannot create progress bar, it already exists")
+            logging.error("ERR: Cannot create progress bar, it already exists")
 
     def update_progress_bar(self,value):
         if self.progressBarActive:
             self.progress['value'] = int(value)   
         else:
-            print("ERR: Cannot update progress bar, it doesn't exist")
+            logging.error("ERR: Cannot update progress bar, it doesn't exist")
 
     def delete_progress_bar(self):
         if self.progressBarActive:
             self.progress.destroy()
             self.progressBarActive =False
         else:
-           print("ERR: Cannot delete progress bar, it doesn't exist") 
+           logging.error("ERR: Cannot delete progress bar, it doesn't exist") 
 
     def create_success_text(self,timeTaken):
         if not self.successTextActive:
@@ -97,7 +98,7 @@ class UI():
             self.success_text_3 = self.canvas.create_text(350, 240, text="{0} seconds".format(timeTaken), fill="black", font=('Helvetica 25 bold'),angle=270 )
             self.successTextActive = True
         else:
-            print("ERR: Cannot create success text, it already exists")
+            logging.error("ERR: Cannot create success text, it already exists")
 
 
     def delete_success_text(self):
@@ -108,7 +109,7 @@ class UI():
             self.canvas.delete(self.success_text_3)
             self.successTextActive =False
         else:
-           print("ERR: Cannot delete success text, it doesn't exist") 
+           logging.error("ERR: Cannot delete success text, it doesn't exist") 
     def update_timer(self,timeTaken):
         self.canvas.itemconfig(self.timer_text,text=timeTaken)
 
@@ -121,12 +122,14 @@ class UI():
         self.win.update()
 
 def main():
+    logging.basicConfig(filename="/home/pi/logs/{0}.log".format(time.time()), level=logging.INFO)
+    logging.info("Before everything()")
+
     ser = serial.Serial('/dev/ttyACM0', baudrate=115200)
-    
     ui = UI()
     ui.setup()
     firstEntry = True
-
+    logging.info("Before while(1)")
     while(1):
         if firstEntry:
             # Effectively a soft restart
@@ -140,7 +143,7 @@ def main():
             val  = ser_read.decode("utf-8")
             str_val = str(val)
             if str_val == "\r\n":
-                print("Got new setup() func on Arduino")
+                logging.info("Got new setup() func on Arduino")
             elif "RESET" in str_val:
                 ui.teardown()
                 firstEntry = True
