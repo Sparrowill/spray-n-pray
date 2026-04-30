@@ -7,10 +7,10 @@
 
 #define PUMP_RELAY_PIN 48
 
-#define MAX_CIRCLE_SWAPS 100  // Needs verifying / tweaking with below
+#define MAX_CIRCLE_SWAPS 50  // Needs verifying / tweaking with below
 #define MAX_TIMER 4           //s - max time spent on each array, multiply by MAX_CIRCLE_SWAPS for maximum game time.
 
-#define TARGET_CHECK_INTERVAL 350  // Effectively the marker of how long the game will last, how often do we add points for on-target
+#define TARGET_CHECK_INTERVAL 200  // Effectively the marker of how long the game will last, how often do we add points for on-target
 
 #define MAX_SCORE 100
 
@@ -79,7 +79,6 @@ void setup() {
 void loop() {
   // Generate a random array for circle swapping
   circleVars circleOrder[MAX_CIRCLE_SWAPS] = {};
-  uint8_t nums[5] = {0};
   for (uint8_t i = 0; i < MAX_CIRCLE_SWAPS; i++) {
     // Chooses a random number between 0 and NUM_CIRCLES-1 for the circle to do
     circleOrder[i].circlePosition = random(0, NUM_CIRCLES);
@@ -91,12 +90,9 @@ void loop() {
     // Chose a random number between 1 and MAX_TIMER for the circle to stay for
     circleOrder[i].circleTime = random(2, MAX_TIMER + 1);
     //  Serial.println("Circle: " + String(circleOrder[i].circlePosition) + ", Time on Circle: " + String(circleOrder[i].circleTime));
-    nums[circleOrder[i].circlePosition]+=1;
   }
 
-  for(uint8_t j =0; j<5;j++){
-    Serial.println("Number of " +String(j) + "'s = " + String(nums[j]));
-  }
+
   uint8_t score = 0;
   uint8_t currentCircle = 0;
   while (1) {
